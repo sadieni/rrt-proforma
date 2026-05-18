@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retrorectal Tumours — Kraske Approach Data Proforma</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0f2240; --teal: #0d7c66; --teal-light: #e6f4f1;
+    --amber: #b45309; --amber-light: #fffbeb;
+    --red: #b91c1c; --red-light: #fef2f2;
+    --green: #15803d; --green-light: #f0fdf4;
+    --text: #1a1a1a; --text-muted: #5a6272; --text-faint: #8c92a0;
+    --border: #d0d5dd; --border-light: #eaecf0;
+    --bg: #ffffff; --bg-secondary: #f8f9fa; --bg-accent: #f0f7f5;
+    --font: 'IBM Plex Sans', -apple-system, sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  body { font-family: var(--font); color: var(--text); background: #f4f5f7; font-size: 13px; line-height: 1.5; }
+  .page { max-width: 900px; margin: 0 auto; background: var(--bg); box-shadow: 0 1px 8px rgba(0,0,0,.08); }
+
+  /* ── CONFIG BANNER ── */
+  .config-banner { background: var(--amber-light); border-bottom: 1px solid #fcd34d; padding: 12px 24px; display: flex; align-items: center; gap: 12px; }
+  .config-banner.connected { background: var(--green-light); border-bottom-color: #86efac; }
+  .config-icon { font-size: 16px; flex-shrink: 0; }
+  .config-text { flex: 1; font-size: 12px; color: var(--text-muted); }
+  .config-text strong { color: var(--text); font-weight: 500; }
+  .config-input { flex: 2; display: flex; gap: 8px; align-items: center; }
+  .config-input input { flex: 1; border: 1px solid var(--border); border-radius: 4px; padding: 6px 10px; font-size: 12px; font-family: var(--mono); color: var(--text); outline: none; background: white; }
+  .config-input input:focus { border-color: var(--teal); }
+  .config-input input::placeholder { color: #aaa; }
+  .btn-connect { background: var(--navy); color: white; border: none; padding: 6px 14px; border-radius: 4px; font-size: 12px; font-family: var(--font); cursor: pointer; font-weight: 500; white-space: nowrap; }
+  .btn-connect:hover { opacity: .85; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; flex-shrink: 0; }
+  .status-dot.ok { background: #22c55e; }
+  .status-dot.err { background: #ef4444; }
+
+  /* ── COVER ── */
+  .cover { background: var(--navy); color: white; padding: 36px 48px 32px; }
+  .cover-eyebrow { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; opacity: .55; font-weight: 500; margin-bottom: 10px; }
+  .cover-title { font-size: 24px; font-weight: 500; line-height: 1.25; margin-bottom: 5px; }
+  .cover-sub { font-size: 13px; opacity: .6; margin-bottom: 24px; }
+  .cover-meta { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; border-top: 1px solid rgba(255,255,255,.15); padding-top: 20px; }
+  .cover-field label { display: block; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; opacity: .5; margin-bottom: 4px; font-weight: 500; }
+  .cover-field input { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15); color: white; padding: 6px 10px; font-size: 12px; font-family: var(--font); width: 100%; border-radius: 4px; outline: none; }
+  .cover-field input::placeholder { opacity: .35; }
+  .cover-field input:focus { border-color: rgba(255,255,255,.4); }
+  /* Study ID row with Load button */
+  .study-id-row { display: flex; gap: 8px; align-items: flex-end; }
+  .study-id-row input { flex: 1; }
+  .btn-load { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: white; padding: 6px 12px; border-radius: 4px; font-size: 11.5px; font-family: var(--font); cursor: pointer; white-space: nowrap; font-weight: 500; transition: background .15s; }
+  .btn-load:hover { background: rgba(255,255,255,.25); }
+  .btn-load:disabled { opacity: .4; cursor: not-allowed; }
+  /* Patient status bar (shown below cover after load) */
+  .patient-bar { display: none; background: var(--teal-light); border-bottom: 1px solid #9ed8cd; padding: 8px 48px; font-size: 12px; color: var(--teal); display: flex; align-items: center; gap: 10px; }
+  .patient-bar.hidden { display: none !important; }
+  .patient-bar-pill { background: var(--teal); color: white; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 10px; letter-spacing: .04em; }
+  .patient-bar-saves { color: var(--text-muted); font-size: 11px; }
+
+  /* ── NAV ── */
+  .nav { background: var(--bg-secondary); border-bottom: 1px solid var(--border-light); padding: 0 48px; display: flex; gap: 0; overflow-x: auto; }
+  .nav-btn { padding: 11px 14px; font-size: 11.5px; font-family: var(--font); font-weight: 500; color: var(--text-muted); border: none; background: none; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all .15s; }
+  .nav-btn:hover { color: var(--text); }
+  .nav-btn.active { color: var(--teal); border-bottom-color: var(--teal); }
+  .nav-btn.complete::after { content: ' ✓'; color: var(--green); font-size: 10px; }
+
+  /* ── SECTIONS ── */
+  .section { display: none; padding: 28px 48px 40px; }
+  .section.active { display: block; }
+  .section-header { margin-bottom: 22px; padding-bottom: 14px; border-bottom: 1.5px solid var(--navy); }
+  .section-num { display: inline-block; background: var(--navy); color: white; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 2px; letter-spacing: .06em; margin-bottom: 7px; }
+  .section-title { font-size: 18px; font-weight: 500; color: var(--navy); margin-bottom: 4px; }
+  .section-desc { font-size: 12px; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── FIELDS ── */
+  .fg { margin-bottom: 22px; }
+  .fg-title { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: .1em; color: var(--teal); background: var(--bg-accent); border-left: 3px solid var(--teal); padding: 5px 10px; margin-bottom: 11px; }
+  .row { display: grid; gap: 12px; margin-bottom: 9px; }
+  .row.c1 { grid-template-columns: 1fr; }
+  .row.c2 { grid-template-columns: 1fr 1fr; }
+  .row.c3 { grid-template-columns: 1fr 1fr 1fr; }
+  .row.c4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 3px; }
+  .field-label { font-size: 11.5px; font-weight: 500; color: var(--text); }
+  .field-note { font-size: 10.5px; color: var(--text-faint); line-height: 1.4; margin-top: 1px; }
+  .field-line { border: none; border-bottom: 1px solid var(--border); background: transparent; color: var(--text); padding: 4px 0; font-size: 13px; font-family: var(--font); outline: none; width: 100%; transition: border-color .15s; }
+  .field-line:focus { border-bottom-color: var(--teal); }
+  .field-line.changed { border-bottom-color: var(--amber); }
+  .field-box { border: 1px solid var(--border); background: var(--bg); border-radius: 4px; padding: 6px 8px; font-size: 12.5px; font-family: var(--font); color: var(--text); outline: none; width: 100%; }
+  .field-box:focus { border-color: var(--teal); }
+  .check-group { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+  .check-item { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px; color: var(--text); cursor: pointer; line-height: 1.4; }
+  .check-item input { margin-top: 2px; width: 13px; height: 13px; accent-color: var(--teal); flex-shrink: 0; }
+  .radio-group { display: flex; flex-direction: column; gap: 6px; margin-top: 5px; }
+  .radio-item { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--text); cursor: pointer; }
+  .radio-item input { width: 13px; height: 13px; accent-color: var(--teal); }
+
+  /* ── CLAVIEN TABLE ── */
+  .cd-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 6px; }
+  .cd-table th { text-align: left; padding: 7px 10px; font-weight: 500; font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--text-muted); background: var(--bg-secondary); border-bottom: 1px solid var(--border); }
+  .cd-table td { padding: 7px 10px; border-bottom: 1px solid var(--border-light); vertical-align: top; }
+  .cd-table tr:hover td { background: var(--bg-secondary); }
+  .grade-pill { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; font-family: var(--mono); background: var(--navy); color: white; }
+
+  /* ── CALLOUT ── */
+  .callout { background: var(--teal-light); border-left: 3px solid var(--teal); border-radius: 0 4px 4px 0; padding: 10px 14px; font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+  .callout strong { color: var(--teal); font-weight: 500; }
+
+  /* ── SAVE BAR ── */
+  .save-bar { position: sticky; bottom: 0; background: white; border-top: 1px solid var(--border); padding: 12px 48px; display: flex; align-items: center; gap: 14px; z-index: 100; }
+  .btn-save { background: var(--teal); color: white; border: none; padding: 10px 24px; border-radius: 4px; font-size: 13px; font-family: var(--font); cursor: pointer; font-weight: 500; transition: opacity .15s; display: flex; align-items: center; gap: 8px; }
+  .btn-save:hover { opacity: .88; }
+  .btn-save:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-clear { background: none; color: var(--text-muted); border: 1px solid var(--border); padding: 9px 18px; border-radius: 4px; font-size: 13px; font-family: var(--font); cursor: pointer; }
+  .btn-clear:hover { background: var(--bg-secondary); }
+  .save-status { flex: 1; font-size: 12px; color: var(--text-muted); }
+  .save-status.saving { color: var(--amber); }
+  .save-status.success { color: var(--green); font-weight: 500; }
+  .save-status.error { color: var(--red); }
+  .unsaved-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); display: inline-block; margin-right: 5px; }
+
+  /* ── SPINNER ── */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: white; border-radius: 50%; animation: spin .7s linear infinite; }
+
+  /* ── FOOTER ── */
+  .footer { border-top: 1px solid var(--border); padding: 14px 48px; display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); }
+  .footer-text { font-size: 11px; color: var(--text-faint); }
+  .print-btn { background: var(--navy); color: white; border: none; padding: 7px 16px; font-size: 12px; font-family: var(--font); cursor: pointer; border-radius: 4px; font-weight: 500; }
+  .print-btn:hover { opacity: .85; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 72px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--navy); color: white; padding: 10px 20px; border-radius: 6px; font-size: 13px; opacity: 0; transition: all .3s; pointer-events: none; z-index: 999; white-space: nowrap; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+  .toast.success { background: var(--green); }
+
+  @media print {
+    .config-banner, .nav, .save-bar, .print-btn, .toast { display: none; }
+    .section { display: block !important; page-break-before: always; }
+    .section:first-child { page-break-before: avoid; }
+    .cover, .fg-title, .grade-pill { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     CONFIG BANNER — paste Apps Script URL here
+     ══════════════════════════════════════════════ -->
+<div class="config-banner" id="configBanner">
+  <span class="status-dot" id="statusDot"></span>
+  <div class="config-text">
+    <strong>Connect to Google Sheets</strong> — paste your Apps Script Web App URL below, then click Connect
+  </div>
+  <div class="config-input">
+    <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec"
+           oninput="markDisconnected()"/>
+    <button class="btn-connect" onclick="testConnection()">Connect</button>
+  </div>
+</div>
+
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-eyebrow">Surgical Research · Single-Centre Retrospective Series</div>
+  <div class="cover-title">Retrorectal Tumours: Kraske Posterior Approach</div>
+  <div class="cover-sub">Data Collection Proforma · Live Google Sheets sync enabled</div>
+  <div class="cover-meta">
+    <div class="cover-field">
+      <label>Patient Study ID</label>
+      <div class="study-id-row">
+        <input id="meta_study_id" name="meta_study_id" placeholder="e.g. RRT-001" oninput="markUnsaved()"/>
+        <button class="btn-load" id="btnLoad" onclick="loadPatient()" title="Load existing patient from Google Sheets">Load</button>
+      </div>
+    </div>
+    <div class="cover-field"><label>Data Collector</label><input id="meta_collector" name="meta_collector" placeholder="Initials" oninput="markUnsaved()"/></div>
+    <div class="cover-field"><label>Date Completed</label><input id="meta_date" name="meta_date" placeholder="DD/MM/YYYY" oninput="markUnsaved()"/></div>
+    <div class="cover-field"><label>Proforma Version</label><input id="meta_version" name="meta_version" placeholder="v1.0" value="v1.0" oninput="markUnsaved()"/></div>
+  </div>
+</div>
+
+<!-- Patient status bar — shown after a patient is loaded from the sheet -->
+<div class="patient-bar hidden" id="patientBar">
+  <span class="patient-bar-pill" id="patientBarId"></span>
+  <span id="patientBarMsg"></span>
+  <span class="patient-bar-saves" id="patientBarSaves"></span>
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="nav-btn active" onclick="show(0)">1 · Demographics</button>
+  <button class="nav-btn" onclick="show(1)">2 · Symptoms</button>
+  <button class="nav-btn" onclick="show(2)">3 · Investigations</button>
+  <button class="nav-btn" onclick="show(3)">4 · Operation</button>
+  <button class="nav-btn" onclick="show(4)">5 · Histopathology</button>
+  <button class="nav-btn" onclick="show(5)">6 · Complications</button>
+  <button class="nav-btn" onclick="show(6)">7 · Functional outcomes</button>
+  <button class="nav-btn" onclick="show(7)">8 · Follow-up</button>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 1: DEMOGRAPHICS
+     ══════════════════════════════════════════════ -->
+<div class="section active" id="s0">
+  <div class="section-header">
+    <div class="section-num">SECTION 1</div>
+    <div class="section-title">Patient demographics &amp; referral</div>
+    <div class="section-desc">Use study ID only. Cross-reference NHS number to study ID in the separate secure linkage log.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Patient characteristics</div>
+    <div class="row c4">
+      <div class="field"><span class="field-label">Study ID</span><input class="field-line" id="d_study_id" oninput="markUnsaved()" placeholder="RRT-___"/></div>
+      <div class="field"><span class="field-label">Sex</span><input class="field-line" id="d_sex" oninput="markUnsaved()" placeholder="Male / Female / Other"/></div>
+      <div class="field"><span class="field-label">Year of birth</span><input class="field-line" id="d_dob_year" oninput="markUnsaved()" placeholder="YYYY"/><span class="field-note">Year only</span></div>
+      <div class="field"><span class="field-label">Age at surgery (yrs)</span><input class="field-line" id="d_age" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+    <div class="row c4">
+      <div class="field"><span class="field-label">BMI (kg/m²)</span><input class="field-line" id="d_bmi" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">ASA grade</span><input class="field-line" id="d_asa" oninput="markUnsaved()" placeholder="I / II / III / IV"/></div>
+      <div class="field"><span class="field-label">Ethnicity</span><input class="field-line" id="d_ethnicity" oninput="markUnsaved()" placeholder="NHS category"/></div>
+      <div class="field"><span class="field-label">Parity (if female)</span><input class="field-line" id="d_parity" oninput="markUnsaved()" placeholder="Number of deliveries"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Referral &amp; presentation route</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Referral source</span><input class="field-line" id="d_referral_source" oninput="markUnsaved()" placeholder="GP / ED / Other specialty / Self-referral"/></div>
+      <div class="field"><span class="field-label">Year of operation</span><input class="field-line" id="d_op_year" oninput="markUnsaved()" placeholder="YYYY"/></div>
+      <div class="field"><span class="field-label">Primary or revision surgery?</span><input class="field-line" id="d_primary_revision" oninput="markUnsaved()" placeholder="Primary / Revision"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">If revision — prior approach</span><input class="field-line" id="d_prior_approach" oninput="markUnsaved()" placeholder="Kraske / Anterior / Combined / Unknown"/></div>
+      <div class="field"><span class="field-label">If revision — prior histology</span><input class="field-line" id="d_prior_histology" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">If revision — months since prior op</span><input class="field-line" id="d_revision_interval" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Symptom duration &amp; diagnostic timeline</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Duration of symptoms (months)</span><input class="field-line" id="d_symptom_duration" oninput="markUnsaved()" placeholder="0 = incidental"/></div>
+      <div class="field"><span class="field-label">Incidental finding?</span><input class="field-line" id="d_incidental" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Diagnostic delay (months)</span><input class="field-line" id="d_diagnostic_delay" oninput="markUnsaved()" placeholder="Symptom onset → specialist"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Prior misdiagnosis?</span><input class="field-line" id="d_misdiagnosis" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">If yes — misdiagnosis given</span><input class="field-line" id="d_misdiagnosis_detail" oninput="markUnsaved()" placeholder="e.g. pilonidal abscess"/></div>
+      <div class="field"><span class="field-label">Number of prior treating clinicians</span><input class="field-line" id="d_prior_clinicians" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 2: SYMPTOMS
+     ══════════════════════════════════════════════ -->
+<div class="section" id="s1">
+  <div class="section-header">
+    <div class="section-num">SECTION 2</div>
+    <div class="section-title">Presenting symptoms &amp; clinical findings</div>
+    <div class="section-desc">Tick all symptoms present at first specialist consultation. Baseline functional scores here are compared against Section 7 postoperative scores.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Symptoms — tick all that apply</div>
+    <div class="row c1">
+      <div class="field">
+        <div class="check-group">
+          <label class="check-item"><input type="checkbox" id="sx_anorectal_pain" onchange="markUnsaved()"/> Anorectal / perineal pain</label>
+          <label class="check-item"><input type="checkbox" id="sx_sacral_pain" onchange="markUnsaved()"/> Sacral or coccygeal pain</label>
+          <label class="check-item"><input type="checkbox" id="sx_back_pain" onchange="markUnsaved()"/> Low back pain</label>
+          <label class="check-item"><input type="checkbox" id="sx_pelvic_pressure" onchange="markUnsaved()"/> Pelvic pressure or heaviness</label>
+          <label class="check-item"><input type="checkbox" id="sx_constipation" onchange="markUnsaved()"/> Constipation / obstructed defaecation</label>
+          <label class="check-item"><input type="checkbox" id="sx_diarrhoea" onchange="markUnsaved()"/> Diarrhoea or altered bowel habit</label>
+          <label class="check-item"><input type="checkbox" id="sx_rectal_bleeding" onchange="markUnsaved()"/> Rectal bleeding</label>
+          <label class="check-item"><input type="checkbox" id="sx_urinary_luts" onchange="markUnsaved()"/> Urinary LUTS (frequency / urgency)</label>
+          <label class="check-item"><input type="checkbox" id="sx_urinary_retention" onchange="markUnsaved()"/> Urinary retention</label>
+          <label class="check-item"><input type="checkbox" id="sx_urinary_incontinence" onchange="markUnsaved()"/> Urinary incontinence</label>
+          <label class="check-item"><input type="checkbox" id="sx_dyspareunia" onchange="markUnsaved()"/> Dyspareunia / sexual dysfunction</label>
+          <label class="check-item"><input type="checkbox" id="sx_neurological" onchange="markUnsaved()"/> Leg pain / sciatica / neurological symptoms</label>
+          <label class="check-item"><input type="checkbox" id="sx_external_mass" onchange="markUnsaved()"/> Buttock swelling / visible external mass</label>
+          <label class="check-item"><input type="checkbox" id="sx_discharge_sinus" onchange="markUnsaved()"/> Perianal / sacral discharge or sinus</label>
+          <label class="check-item"><input type="checkbox" id="sx_incidental" onchange="markUnsaved()"/> Incidental finding — no symptoms</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Clinical examination</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">DRE performed?</span><input class="field-line" id="ex_dre" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Mass palpable on DRE?</span><input class="field-line" id="ex_dre_mass" oninput="markUnsaved()" placeholder="Yes / No / Not performed"/></div>
+      <div class="field"><span class="field-label">Position of mass (DRE)</span><input class="field-line" id="ex_dre_position" oninput="markUnsaved()" placeholder="Posterior / Lateral / Anterior / Circumferential"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Estimated size on DRE (cm)</span><input class="field-line" id="ex_dre_size" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">Mucosa intact over mass?</span><input class="field-line" id="ex_mucosa" oninput="markUnsaved()" placeholder="Yes / No / Not assessed"/></div>
+      <div class="field"><span class="field-label">External visible mass?</span><input class="field-line" id="ex_external_mass" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+    </div>
+    <div class="row c2">
+      <div class="field"><span class="field-label">Cutaneous fistula / sinus?</span><input class="field-line" id="ex_fistula" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Neurological examination</span><input class="field-line" id="ex_neuro" oninput="markUnsaved()" placeholder="Normal / Hypoaesthesia / Motor deficit / Other"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Baseline functional scores (preoperative)</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">LARS score (baseline)</span><input class="field-line" id="fn_lars_pre" oninput="markUnsaved()" placeholder="0–42 / NR"/></div>
+      <div class="field"><span class="field-label">IPSS score (baseline)</span><input class="field-line" id="fn_ipss_pre" oninput="markUnsaved()" placeholder="0–35 / NR"/></div>
+      <div class="field"><span class="field-label">Wexner score (baseline)</span><input class="field-line" id="fn_wexner_pre" oninput="markUnsaved()" placeholder="0–20 / NR"/></div>
+    </div>
+    <div class="row c2">
+      <div class="field"><span class="field-label">IIEF score — male (baseline)</span><input class="field-line" id="fn_iief_pre" oninput="markUnsaved()" placeholder="5–75 / NR"/></div>
+      <div class="field"><span class="field-label">FSFI score — female (baseline)</span><input class="field-line" id="fn_fsfi_pre" oninput="markUnsaved()" placeholder="2–36 / NR"/></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 3: INVESTIGATIONS
+     ══════════════════════════════════════════════ -->
+<div class="section" id="s2">
+  <div class="section-header">
+    <div class="section-num">SECTION 3</div>
+    <div class="section-title">Preoperative investigations &amp; imaging</div>
+    <div class="section-desc">Extract MRI characteristics directly from the radiology report. These fields drive the approach-selection analysis.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Imaging modalities performed — tick all</div>
+    <div class="row c1"><div class="field"><div class="check-group">
+      <label class="check-item"><input type="checkbox" id="img_mri" onchange="markUnsaved()"/> MRI pelvis</label>
+      <label class="check-item"><input type="checkbox" id="img_ct_staging" onchange="markUnsaved()"/> CT chest/abdomen/pelvis (staging)</label>
+      <label class="check-item"><input type="checkbox" id="img_ct_ap" onchange="markUnsaved()"/> CT abdomen/pelvis only</label>
+      <label class="check-item"><input type="checkbox" id="img_erus" onchange="markUnsaved()"/> Endorectal ultrasound</label>
+      <label class="check-item"><input type="checkbox" id="img_xray" onchange="markUnsaved()"/> Plain X-ray sacrum/pelvis</label>
+      <label class="check-item"><input type="checkbox" id="img_pet" onchange="markUnsaved()"/> PET-CT</label>
+    </div></div></div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">MRI characteristics</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Cranial extent (sacral level)</span><input class="field-line" id="mri_cranial" oninput="markUnsaved()" placeholder="S1 / S1–2 / S2 / S3 / S4 / Below S4"/></div>
+      <div class="field"><span class="field-label">Caudal extent</span><input class="field-line" id="mri_caudal" oninput="markUnsaved()" placeholder="S3 / S4 / S5 / Coccyx / Below coccyx"/></div>
+      <div class="field"><span class="field-label">Maximum diameter (cm)</span><input class="field-line" id="mri_dim1" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Second dimension (cm)</span><input class="field-line" id="mri_dim2" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">Third dimension (cm)</span><input class="field-line" id="mri_dim3" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">Lesion morphology</span><input class="field-line" id="mri_morphology" oninput="markUnsaved()" placeholder="Purely cystic / Mixed / Purely solid"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Lesion margin</span><input class="field-line" id="mri_margin" oninput="markUnsaved()" placeholder="Well-defined / Ill-defined"/></div>
+      <div class="field"><span class="field-label">Relationship to rectum</span><input class="field-line" id="mri_rectum" oninput="markUnsaved()" placeholder="Separate / Abutting / Invading"/></div>
+      <div class="field"><span class="field-label">Internal septations</span><input class="field-line" id="mri_septations" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Solid nodule within cyst</span><input class="field-line" id="mri_solid_nodule" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Enhancement (contrast MRI)</span><input class="field-line" id="mri_enhancement" oninput="markUnsaved()" placeholder="None / Rim / Nodular / Diffuse / NP"/></div>
+      <div class="field"><span class="field-label">Sacral involvement</span><input class="field-line" id="mri_sacrum" oninput="markUnsaved()" placeholder="None / Contact / Erosion / Invasion"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Neural foraminal involvement</span><input class="field-line" id="mri_neural" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Relationship to levator ani</span><input class="field-line" id="mri_levator" oninput="markUnsaved()" placeholder="Above / Straddling / Below"/></div>
+      <div class="field"><span class="field-label">Radiologist malignancy suspicion</span><input class="field-line" id="mri_malignancy_suspicion" oninput="markUnsaved()" placeholder="Low / Intermediate / High / Not stated"/></div>
+    </div>
+    <div class="row c1">
+      <div class="field"><span class="field-label">Radiologist's differential diagnosis</span><input class="field-line" id="mri_differential" oninput="markUnsaved()" placeholder="As reported"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Biopsy &amp; MDT</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Preoperative biopsy?</span><input class="field-line" id="bx_performed" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Biopsy route</span><input class="field-line" id="bx_route" oninput="markUnsaved()" placeholder="Transgluteal / Transrectal / CT-guided / TEM"/></div>
+      <div class="field"><span class="field-label">Biopsy result</span><input class="field-line" id="bx_result" oninput="markUnsaved()" placeholder="Benign / Malignant / Non-diagnostic"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">MDT discussed?</span><input class="field-line" id="mdt_discussed" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">MDT recommendation</span><input class="field-line" id="mdt_recommendation" oninput="markUnsaved()" placeholder="Kraske / Anterior / Combined / Observe"/></div>
+      <div class="field"><span class="field-label">Reason Kraske selected</span><input class="field-line" id="mdt_kraske_reason" oninput="markUnsaved()" placeholder="Low level / Cystic / Below S3 / Surgeon preference / Other"/></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 4: OPERATIVE
+     ══════════════════════════════════════════════ -->
+<div class="section" id="s3">
+  <div class="section-header">
+    <div class="section-num">SECTION 4</div>
+    <div class="section-title">Operative details</div>
+    <div class="section-desc">Complete from operative note and anaesthetic record.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Procedure planning</div>
+    <div class="row c4">
+      <div class="field"><span class="field-label">Month / Year of surgery</span><input class="field-line" id="op_date" oninput="markUnsaved()" placeholder="MM/YYYY"/></div>
+      <div class="field"><span class="field-label">Primary surgeon grade</span><input class="field-line" id="op_surgeon_grade" oninput="markUnsaved()" placeholder="Consultant / Fellow / SpR"/></div>
+      <div class="field"><span class="field-label">Case supervised?</span><input class="field-line" id="op_supervised" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Elective or emergency?</span><input class="field-line" id="op_urgency" oninput="markUnsaved()" placeholder="Elective / Urgent / Emergency"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Combined approach required?</span><input class="field-line" id="op_combined" oninput="markUnsaved()" placeholder="Yes (anterior + Kraske) / No"/></div>
+      <div class="field"><span class="field-label">If combined — sequence</span><input class="field-line" id="op_combined_sequence" oninput="markUnsaved()" placeholder="Anterior first / Kraske first"/></div>
+      <div class="field"><span class="field-label">Diverting stoma created?</span><input class="field-line" id="op_stoma" oninput="markUnsaved()" placeholder="Yes — type / No"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Intraoperative technique</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Patient position</span><input class="field-line" id="op_position" oninput="markUnsaved()" placeholder="Prone jack-knife / Modified lithotomy"/></div>
+      <div class="field"><span class="field-label">Incision type</span><input class="field-line" id="op_incision" oninput="markUnsaved()" placeholder="Midline / Parasacral / Y-shaped / Other"/></div>
+      <div class="field"><span class="field-label">Incision length (cm)</span><input class="field-line" id="op_incision_length" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Coccygectomy performed?</span><input class="field-line" id="op_coccygectomy" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Extent of bone resection</span><input class="field-line" id="op_bone_resection" oninput="markUnsaved()" placeholder="None / Coccyx tip / Full coccyx / Partial sacrum (level)"/></div>
+      <div class="field"><span class="field-label">Presacral fascia excised?</span><input class="field-line" id="op_fascia" oninput="markUnsaved()" placeholder="Yes — en-bloc / Partial / No"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Rectal wall breached?</span><input class="field-line" id="op_rectal_breach" oninput="markUnsaved()" placeholder="Yes — repaired / No"/></div>
+      <div class="field"><span class="field-label">Neurostimulation used?</span><input class="field-line" id="op_neurostim" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Drain inserted?</span><input class="field-line" id="op_drain" oninput="markUnsaved()" placeholder="Yes — type / No"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Operative metrics</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Operative time — skin to skin (min)</span><input class="field-line" id="op_time" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">Estimated blood loss (mL)</span><input class="field-line" id="op_ebl" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">Intraoperative transfusion?</span><input class="field-line" id="op_transfusion" oninput="markUnsaved()" placeholder="Yes — units / No"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Wound closure technique</span><input class="field-line" id="op_closure" oninput="markUnsaved()" placeholder="Primary layered / Flap / VAC / Open"/></div>
+      <div class="field"><span class="field-label">Macroscopic completeness</span><input class="field-line" id="op_macro_completeness" oninput="markUnsaved()" placeholder="Complete (R0 intent) / Incomplete"/></div>
+      <div class="field"><span class="field-label">Tumour ruptured?</span><input class="field-line" id="op_rupture" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+    </div>
+    <div class="row c1">
+      <div class="field"><span class="field-label">Intraoperative complication / notes</span><textarea class="field-box" id="op_notes" oninput="markUnsaved()" rows="2" placeholder="Describe any intraoperative event or add context not captured above"></textarea></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 5: HISTOPATHOLOGY
+     ══════════════════════════════════════════════ -->
+<div class="section" id="s4">
+  <div class="section-header">
+    <div class="section-num">SECTION 5</div>
+    <div class="section-title">Histopathological findings</div>
+    <div class="section-desc">Extract from formal histopathology report. Use WHO classification terminology. Margin status is a primary endpoint.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Primary histological diagnosis</div>
+    <div class="row c1"><div class="field">
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_tailgut" onchange="markUnsaved()"/> Tailgut cyst (retrorectal cystic hamartoma)</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_epidermoid" onchange="markUnsaved()"/> Epidermoid cyst</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_dermoid" onchange="markUnsaved()"/> Dermoid cyst</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_mature_teratoma" onchange="markUnsaved()"/> Mature teratoma</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_immature_teratoma" onchange="markUnsaved()"/> Immature teratoma</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_meningocele" onchange="markUnsaved()"/> Anterior sacral meningocele</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_schwannoma" onchange="markUnsaved()"/> Schwannoma / neurilemmoma</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_neurofibroma" onchange="markUnsaved()"/> Neurofibroma</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_gist" onchange="markUnsaved()"/> GIST</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_desmoid" onchange="markUnsaved()"/> Desmoid fibromatosis</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_chordoma" onchange="markUnsaved()"/> Chordoma</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_nen" onchange="markUnsaved()"/> Neuroendocrine tumour (NEN)</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_adenocarcinoma" onchange="markUnsaved()"/> Adenocarcinoma in tailgut cyst</label>
+        <label class="radio-item"><input type="radio" name="histotype" id="hist_other" onchange="markUnsaved()"/> Other: <input class="field-line" id="hist_other_detail" oninput="markUnsaved()" style="width:200px; display:inline-block; margin-left:8px"/></label>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Malignancy &amp; margins</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Benign or malignant?</span><input class="field-line" id="hist_benign_malignant" oninput="markUnsaved()" placeholder="Benign / Borderline / Malignant"/></div>
+      <div class="field"><span class="field-label">WHO/AJCC grade (if malignant)</span><input class="field-line" id="hist_grade" oninput="markUnsaved()" placeholder="G1 / G2 / G3"/></div>
+      <div class="field"><span class="field-label">Malignant transformation in cyst?</span><input class="field-line" id="hist_malignant_transformation" oninput="markUnsaved()" placeholder="Yes / No / N/A"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">pT stage</span><input class="field-line" id="hist_pt" oninput="markUnsaved()" placeholder="If applicable"/></div>
+      <div class="field"><span class="field-label">pN stage</span><input class="field-line" id="hist_pn" oninput="markUnsaved()" placeholder="If applicable"/></div>
+      <div class="field"><span class="field-label">pM stage</span><input class="field-line" id="hist_pm" oninput="markUnsaved()" placeholder="If applicable"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Resection margin status</span><input class="field-line" id="hist_margin_status" oninput="markUnsaved()" placeholder="R0 / R1 / R2"/></div>
+      <div class="field"><span class="field-label">Closest margin distance (mm)</span><input class="field-line" id="hist_margin_dist" oninput="markUnsaved()" placeholder="If R0"/></div>
+      <div class="field"><span class="field-label">Which margin is closest?</span><input class="field-line" id="hist_margin_site" oninput="markUnsaved()" placeholder="Sacral / Rectal / Lateral / Caudal"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Maximum dimension — pathological (cm)</span><input class="field-line" id="hist_max_dim" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">Lymphovascular invasion</span><input class="field-line" id="hist_lvi" oninput="markUnsaved()" placeholder="Yes / No / Not assessed"/></div>
+      <div class="field"><span class="field-label">Perineural invasion</span><input class="field-line" id="hist_pni" oninput="markUnsaved()" placeholder="Yes / No / Not assessed"/></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 6: COMPLICATIONS
+     ══════════════════════════════════════════════ -->
+<div class="section" id="s5">
+  <div class="section-header">
+    <div class="section-num">SECTION 6</div>
+    <div class="section-title">Short-term outcomes &amp; complications</div>
+    <div class="section-desc">Grade all complications using Clavien-Dindo. Record all complications within 90 days.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Clavien-Dindo reference</div>
+    <table class="cd-table">
+      <thead><tr><th style="width:55px">Grade</th><th>Definition</th><th style="width:200px">Example in this cohort</th></tr></thead>
+      <tbody>
+        <tr><td><span class="grade-pill">0</span></td><td>No complication</td><td style="color:var(--text-muted)">Uneventful recovery</td></tr>
+        <tr><td><span class="grade-pill">I</span></td><td>Deviation not requiring drug/surgical/radiological intervention</td><td style="color:var(--text-muted)">Superficial wound care at bedside</td></tr>
+        <tr><td><span class="grade-pill">II</span></td><td>Pharmacological treatment beyond grade I; blood transfusion; TPN</td><td style="color:var(--text-muted)">IV antibiotics for SSI</td></tr>
+        <tr><td><span class="grade-pill">IIIa</span></td><td>Surgical/endoscopic/radiological intervention — not under GA</td><td style="color:var(--text-muted)">Percutaneous presacral drainage</td></tr>
+        <tr><td><span class="grade-pill">IIIb</span></td><td>Intervention under general anaesthesia</td><td style="color:var(--text-muted)">Return to theatre for wound breakdown</td></tr>
+        <tr><td><span class="grade-pill">IVa</span></td><td>Life-threatening — single organ failure — ICU</td><td style="color:var(--text-muted)">Septic shock</td></tr>
+        <tr><td><span class="grade-pill">IVb</span></td><td>Life-threatening — multi-organ failure</td><td style="color:var(--text-muted)">—</td></tr>
+        <tr><td><span class="grade-pill">V</span></td><td>Death</td><td style="color:var(--text-muted)">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Postoperative course — general</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Return to theatre?</span><input class="field-line" id="cx_rtt" oninput="markUnsaved()" placeholder="Yes — POD + indication / No"/></div>
+      <div class="field"><span class="field-label">ITU / HDU admission?</span><input class="field-line" id="cx_itu" oninput="markUnsaved()" placeholder="Yes — days / No"/></div>
+      <div class="field"><span class="field-label">Length of stay (days)</span><input class="field-line" id="cx_los" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">30-day readmission?</span><input class="field-line" id="cx_readmit_30" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">90-day readmission?</span><input class="field-line" id="cx_readmit_90" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Reason for readmission</span><input class="field-line" id="cx_readmit_reason" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Wound complications — tick all that apply</div>
+    <div class="row c1"><div class="field"><div class="check-group">
+      <label class="check-item"><input type="checkbox" id="cx_none" onchange="markUnsaved()"/> None — uneventful wound healing</label>
+      <label class="check-item"><input type="checkbox" id="cx_superficial_ssi" onchange="markUnsaved()"/> Superficial SSI — antibiotics only (Clavien I–II)</label>
+      <label class="check-item"><input type="checkbox" id="cx_deep_ssi" onchange="markUnsaved()"/> Deep SSI / wound breakdown — surgical debridement (Clavien IIIb)</label>
+      <label class="check-item"><input type="checkbox" id="cx_haematoma_conservative" onchange="markUnsaved()"/> Wound haematoma — conservative (Clavien I–II)</label>
+      <label class="check-item"><input type="checkbox" id="cx_haematoma_operative" onchange="markUnsaved()"/> Wound haematoma — evacuation (Clavien IIIa/b)</label>
+      <label class="check-item"><input type="checkbox" id="cx_presacral_perc" onchange="markUnsaved()"/> Presacral collection — percutaneous drainage (Clavien IIIa)</label>
+      <label class="check-item"><input type="checkbox" id="cx_presacral_op" onchange="markUnsaved()"/> Presacral collection — operative drainage (Clavien IIIb)</label>
+      <label class="check-item"><input type="checkbox" id="cx_fistula_wound" onchange="markUnsaved()"/> Presacral-cutaneous fistula formation</label>
+      <label class="check-item"><input type="checkbox" id="cx_delayed_healing" onchange="markUnsaved()"/> Delayed healing — open &gt;6 weeks</label>
+      <label class="check-item"><input type="checkbox" id="cx_vac" onchange="markUnsaved()"/> VAC (negative pressure wound therapy) required</label>
+    </div></div></div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Max Clavien-Dindo (wound)</span><input class="field-line" id="cx_cd_wound" oninput="markUnsaved()" placeholder="0 / I / II / IIIa / IIIb / IVa / IVb / V"/></div>
+      <div class="field"><span class="field-label">Time to wound complication (POD)</span><input class="field-line" id="cx_wound_pod" oninput="markUnsaved()" placeholder=""/></div>
+      <div class="field"><span class="field-label">Time to wound healing (weeks)</span><input class="field-line" id="cx_wound_healing_weeks" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Other complications — tick all that apply</div>
+    <div class="row c1"><div class="field"><div class="check-group">
+      <label class="check-item"><input type="checkbox" id="cx_rectal_injury" onchange="markUnsaved()"/> Rectal injury — recognised and repaired intraoperatively</label>
+      <label class="check-item"><input type="checkbox" id="cx_delayed_perforation" onchange="markUnsaved()"/> Delayed rectal perforation or rectocutaneous fistula</label>
+      <label class="check-item"><input type="checkbox" id="cx_retention" onchange="markUnsaved()"/> Urinary retention requiring catheter &gt;7 days</label>
+      <label class="check-item"><input type="checkbox" id="cx_uti" onchange="markUnsaved()"/> Urinary tract infection</label>
+      <label class="check-item"><input type="checkbox" id="cx_vte" onchange="markUnsaved()"/> DVT / pulmonary embolism</label>
+      <label class="check-item"><input type="checkbox" id="cx_ileus" onchange="markUnsaved()"/> Prolonged ileus (&gt;3 days)</label>
+      <label class="check-item"><input type="checkbox" id="cx_hypoaesthesia" onchange="markUnsaved()"/> New perianal / perineal hypoaesthesia</label>
+      <label class="check-item"><input type="checkbox" id="cx_sacral_palsy" onchange="markUnsaved()"/> New sacral nerve palsy / motor deficit</label>
+      <label class="check-item"><input type="checkbox" id="cx_sexual_dysfunction" onchange="markUnsaved()"/> New sexual dysfunction — postoperative onset</label>
+      <label class="check-item"><input type="checkbox" id="cx_haemorrhage" onchange="markUnsaved()"/> Postoperative haemorrhage requiring transfusion</label>
+    </div></div></div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Overall max Clavien-Dindo grade</span><input class="field-line" id="cx_cd_overall" oninput="markUnsaved()" placeholder="0 / I / II / IIIa / IIIb / IVa / IVb / V"/></div>
+      <div class="field"><span class="field-label">30-day mortality</span><input class="field-line" id="cx_mortality_30" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">90-day mortality</span><input class="field-line" id="cx_mortality_90" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+    </div>
+    <div class="row c1">
+      <div class="field"><span class="field-label">Complications — additional detail</span><textarea class="field-box" id="cx_notes" oninput="markUnsaved()" rows="2" placeholder="Free text — describe unlisted complications or add clinical detail"></textarea></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 7: FUNCTIONAL OUTCOMES
+     ══════════════════════════════════════════════ -->
+<div class="section" id="s6">
+  <div class="section-header">
+    <div class="section-num">SECTION 7</div>
+    <div class="section-title">Functional outcomes</div>
+    <div class="section-desc">Least-characterised domain in the literature. Collect at baseline (preop), 3 months, 6 months, 12 months, and last follow-up.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Bowel function — LARS score (0–42; ≥21 = major LARS)</div>
+    <div class="row c4">
+      <div class="field"><span class="field-label">LARS — Preop (baseline)</span><input class="field-line" id="fn_lars_base" oninput="markUnsaved()" placeholder="0–42 / NR"/></div>
+      <div class="field"><span class="field-label">LARS — 3 months</span><input class="field-line" id="fn_lars_3m" oninput="markUnsaved()" placeholder="0–42 / NR"/></div>
+      <div class="field"><span class="field-label">LARS — 6 months</span><input class="field-line" id="fn_lars_6m" oninput="markUnsaved()" placeholder="0–42 / NR"/></div>
+      <div class="field"><span class="field-label">LARS — 12 months</span><input class="field-line" id="fn_lars_12m" oninput="markUnsaved()" placeholder="0–42 / NR"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">LARS — last follow-up</span><input class="field-line" id="fn_lars_last" oninput="markUnsaved()" placeholder="0–42 / NR"/></div>
+      <div class="field"><span class="field-label">New faecal incontinence?</span><input class="field-line" id="fn_fi_new" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">New constipation requiring treatment?</span><input class="field-line" id="fn_constipation_new" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Urinary function — IPSS (0–35; >19 = severe)</div>
+    <div class="row c4">
+      <div class="field"><span class="field-label">IPSS — Preop</span><input class="field-line" id="fn_ipss_base" oninput="markUnsaved()" placeholder="0–35 / NR"/></div>
+      <div class="field"><span class="field-label">IPSS — 3 months</span><input class="field-line" id="fn_ipss_3m" oninput="markUnsaved()" placeholder="0–35 / NR"/></div>
+      <div class="field"><span class="field-label">IPSS — 6 months</span><input class="field-line" id="fn_ipss_6m" oninput="markUnsaved()" placeholder="0–35 / NR"/></div>
+      <div class="field"><span class="field-label">IPSS — 12 months</span><input class="field-line" id="fn_ipss_12m" oninput="markUnsaved()" placeholder="0–35 / NR"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">New urinary retention?</span><input class="field-line" id="fn_retention_new" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Duration of catheterisation (days)</span><input class="field-line" id="fn_catheter_days" oninput="markUnsaved()" placeholder="If applicable"/></div>
+      <div class="field"><span class="field-label">Permanent urinary dysfunction?</span><input class="field-line" id="fn_permanent_urinary" oninput="markUnsaved()" placeholder="Yes (describe) / No"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Sexual function — IIEF (male, 5–75) / FSFI (female, 2–36)</div>
+    <div class="row c4">
+      <div class="field"><span class="field-label">IIEF — Preop</span><input class="field-line" id="fn_iief_base" oninput="markUnsaved()" placeholder="5–75 / NR"/></div>
+      <div class="field"><span class="field-label">IIEF — 3 months</span><input class="field-line" id="fn_iief_3m" oninput="markUnsaved()" placeholder="5–75 / NR"/></div>
+      <div class="field"><span class="field-label">IIEF — 6 months</span><input class="field-line" id="fn_iief_6m" oninput="markUnsaved()" placeholder="5–75 / NR"/></div>
+      <div class="field"><span class="field-label">IIEF — 12 months</span><input class="field-line" id="fn_iief_12m" oninput="markUnsaved()" placeholder="5–75 / NR"/></div>
+    </div>
+    <div class="row c4">
+      <div class="field"><span class="field-label">FSFI — Preop</span><input class="field-line" id="fn_fsfi_base" oninput="markUnsaved()" placeholder="2–36 / NR"/></div>
+      <div class="field"><span class="field-label">FSFI — 3 months</span><input class="field-line" id="fn_fsfi_3m" oninput="markUnsaved()" placeholder="2–36 / NR"/></div>
+      <div class="field"><span class="field-label">FSFI — 6 months</span><input class="field-line" id="fn_fsfi_6m" oninput="markUnsaved()" placeholder="2–36 / NR"/></div>
+      <div class="field"><span class="field-label">FSFI — 12 months</span><input class="field-line" id="fn_fsfi_12m" oninput="markUnsaved()" placeholder="2–36 / NR"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">New dyspareunia (female)?</span><input class="field-line" id="fn_dyspareunia" oninput="markUnsaved()" placeholder="Yes / No / N/A"/></div>
+      <div class="field"><span class="field-label">New erectile dysfunction (male)?</span><input class="field-line" id="fn_ed" oninput="markUnsaved()" placeholder="Yes / No / N/A"/></div>
+      <div class="field"><span class="field-label">Return to work / activity (weeks)</span><input class="field-line" id="fn_rtw" oninput="markUnsaved()" placeholder=""/></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SECTION 8: FOLLOW-UP
+     ══════════════════════════════════════════════ -->
+<div class="section" id="s7">
+  <div class="section-header">
+    <div class="section-num">SECTION 8</div>
+    <div class="section-title">Follow-up, surveillance &amp; recurrence</div>
+    <div class="section-desc">All recurrences must be radiologically confirmed. Histological confirmation is strongly desirable for publication.</div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Follow-up structure</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Follow-up duration (months)</span><input class="field-line" id="fu_duration" oninput="markUnsaved()" placeholder="Surgery → last contact or death"/></div>
+      <div class="field"><span class="field-label">Date of last follow-up</span><input class="field-line" id="fu_last_date" oninput="markUnsaved()" placeholder="MM/YYYY"/></div>
+      <div class="field"><span class="field-label">Status at last follow-up</span><input class="field-line" id="fu_status" oninput="markUnsaved()" placeholder="Alive NED / Alive with disease / Died of disease / Died other / Lost to FU"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Surveillance imaging?</span><input class="field-line" id="fu_surveillance" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Surveillance modality</span><input class="field-line" id="fu_surveillance_modality" oninput="markUnsaved()" placeholder="MRI / CT / Both / PET / None"/></div>
+      <div class="field"><span class="field-label">Surveillance interval</span><input class="field-line" id="fu_surveillance_interval" oninput="markUnsaved()" placeholder="3-monthly / 6-monthly / Annual / Ad hoc"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Recurrence</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Local recurrence?</span><input class="field-line" id="fu_local_recurrence" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Time to recurrence (months)</span><input class="field-line" id="fu_ttp" oninput="markUnsaved()" placeholder="Surgery → confirmed recurrence"/></div>
+      <div class="field"><span class="field-label">Method of detection</span><input class="field-line" id="fu_detection_method" oninput="markUnsaved()" placeholder="Surveillance / Symptomatic / Examination / Incidental"/></div>
+    </div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Recurrence location</span><input class="field-line" id="fu_recurrence_site" oninput="markUnsaved()" placeholder="Presacral / Sacral bone / Local soft tissue / Rectal wall"/></div>
+      <div class="field"><span class="field-label">Distant metastases?</span><input class="field-line" id="fu_distant_mets" oninput="markUnsaved()" placeholder="Yes / No"/></div>
+      <div class="field"><span class="field-label">Site(s) of metastases</span><input class="field-line" id="fu_mets_site" oninput="markUnsaved()" placeholder="Liver / Lung / Bone / Nodes / Other"/></div>
+    </div>
+    <div class="row c2">
+      <div class="field"><span class="field-label">Disease-free survival (months)</span><input class="field-line" id="fu_dfs" oninput="markUnsaved()" placeholder="Surgery → recurrence or last follow-up NED"/></div>
+      <div class="field"><span class="field-label">Overall survival (months)</span><input class="field-line" id="fu_os" oninput="markUnsaved()" placeholder="Surgery → death or last follow-up"/></div>
+    </div>
+  </div>
+
+  <div class="fg">
+    <div class="fg-title">Adjuvant &amp; salvage treatment</div>
+    <div class="row c3">
+      <div class="field"><span class="field-label">Adjuvant therapy received?</span><input class="field-line" id="fu_adjuvant" oninput="markUnsaved()" placeholder="Radiotherapy / Chemotherapy / Both / None"/></div>
+      <div class="field"><span class="field-label">Salvage treatment (if recurrence)</span><input class="field-line" id="fu_salvage" oninput="markUnsaved()" placeholder="Re-resection / RT / Chemo / Palliative / Observation / N/A"/></div>
+      <div class="field"><span class="field-label">R-status of re-resection</span><input class="field-line" id="fu_salvage_margin" oninput="markUnsaved()" placeholder="R0 / R1 / R2 / N/A"/></div>
+    </div>
+    <div class="row c1">
+      <div class="field"><span class="field-label">Additional notes</span><textarea class="field-box" id="fu_notes" oninput="markUnsaved()" rows="3" placeholder="Any other clinically relevant information not captured above"></textarea></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── SAVE BAR ── -->
+<div class="save-bar">
+  <button class="btn-save" id="btnSave" onclick="saveToSheets()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Save patient to Google Sheets
+  </button>
+  <button class="btn-clear" onclick="clearForm()">Clear form</button>
+  <span class="save-status" id="saveStatus"><span class="unsaved-dot" id="unsavedDot" style="display:none"></span><span id="saveMsg">No changes</span></span>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <span class="footer-text">Retrorectal / Kraske Series Proforma v1.0 · Research use only · Not a clinical document</span>
+  <button class="print-btn" onclick="window.print()">Print / Export PDF</button>
+</div>
+
+</div><!-- .page -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════════
+     JAVASCRIPT
+     ══════════════════════════════════════════════ -->
+<script>
+/* ── Navigation ── */
+function show(i){
+  document.querySelectorAll('.section').forEach((s,idx) => s.classList.toggle('active', idx===i));
+  document.querySelectorAll('.nav-btn').forEach((b,idx) => b.classList.toggle('active', idx===i));
+  window.scrollTo(0,0);
+}
+
+/* ── Unsaved state ── */
+let hasUnsaved = false;
+function markUnsaved(){
+  hasUnsaved = true;
+  document.getElementById('unsavedDot').style.display = 'inline-block';
+  document.getElementById('saveMsg').textContent = 'Unsaved changes';
+  document.getElementById('saveStatus').className = 'save-status saving';
+}
+function markSaved(){
+  hasUnsaved = false;
+  document.getElementById('unsavedDot').style.display = 'none';
+  document.getElementById('saveMsg').textContent = 'Saved to Google Sheets ✓';
+  document.getElementById('saveStatus').className = 'save-status success';
+}
+function markError(msg){
+  document.getElementById('saveMsg').textContent = msg || 'Save failed — check connection';
+  document.getElementById('saveStatus').className = 'save-status error';
+}
+
+/* ── Toast ── */
+function toast(msg, type=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' '+type : '');
+  setTimeout(() => t.className = 'toast', 3200);
+}
+
+/* ── Connection test ── */
+let scriptUrl = localStorage.getItem('rrt_script_url') || '';
+if(scriptUrl){
+  document.getElementById('scriptUrl').value = scriptUrl;
+  updateConnectedUI(true);
+}
+
+function markDisconnected(){
+  document.getElementById('statusDot').className = 'status-dot';
+  document.getElementById('configBanner').className = 'config-banner';
+}
+
+async function testConnection(){
+  const url = document.getElementById('scriptUrl').value.trim();
+  if(!url){ toast('Paste your Apps Script URL first','error'); return; }
+  const btn = document.querySelector('.btn-connect');
+  btn.textContent = 'Testing…'; btn.disabled = true;
+  try {
+    const res = await fetch(url + '?ping=1', { method: 'GET', mode: 'no-cors' });
+    // no-cors always returns opaque — treat reaching it as success
+    scriptUrl = url;
+    localStorage.setItem('rrt_script_url', url);
+    updateConnectedUI(true);
+    toast('Connected — Google Sheets sync enabled', 'success');
+  } catch(e) {
+    toast('Connection failed — check URL and try again', 'error');
+    document.getElementById('statusDot').className = 'status-dot err';
+  }
+  btn.textContent = 'Connect'; btn.disabled = false;
+}
+
+function updateConnectedUI(ok){
+  document.getElementById('statusDot').className = 'status-dot' + (ok ? ' ok' : ' err');
+  document.getElementById('configBanner').className = 'config-banner' + (ok ? ' connected' : '');
+  const t = document.querySelector('.config-text');
+  if(ok) t.innerHTML = '<strong>Connected to Google Sheets</strong> — data will sync on every save. Change URL to switch sheet.';
+}
+
+/* ── Collect all form data ── */
+function collectData(){
+  const data = {
+    timestamp: new Date().toISOString(),
+    // META
+    meta_study_id:      v('meta_study_id'),
+    meta_collector:     v('meta_collector'),
+    meta_date:          v('meta_date'),
+    // SECTION 1 — DEMOGRAPHICS
+    d_study_id:         v('d_study_id'),
+    d_sex:              v('d_sex'),
+    d_dob_year:         v('d_dob_year'),
+    d_age:              v('d_age'),
+    d_bmi:              v('d_bmi'),
+    d_asa:              v('d_asa'),
+    d_ethnicity:        v('d_ethnicity'),
+    d_parity:           v('d_parity'),
+    d_referral_source:  v('d_referral_source'),
+    d_op_year:          v('d_op_year'),
+    d_primary_revision: v('d_primary_revision'),
+    d_prior_approach:   v('d_prior_approach'),
+    d_prior_histology:  v('d_prior_histology'),
+    d_revision_interval:v('d_revision_interval'),
+    d_symptom_duration: v('d_symptom_duration'),
+    d_incidental:       v('d_incidental'),
+    d_diagnostic_delay: v('d_diagnostic_delay'),
+    d_misdiagnosis:     v('d_misdiagnosis'),
+    d_misdiagnosis_detail: v('d_misdiagnosis_detail'),
+    d_prior_clinicians: v('d_prior_clinicians'),
+    // SECTION 2 — SYMPTOMS (checkboxes)
+    sx_anorectal_pain:  cb('sx_anorectal_pain'),
+    sx_sacral_pain:     cb('sx_sacral_pain'),
+    sx_back_pain:       cb('sx_back_pain'),
+    sx_pelvic_pressure: cb('sx_pelvic_pressure'),
+    sx_constipation:    cb('sx_constipation'),
+    sx_diarrhoea:       cb('sx_diarrhoea'),
+    sx_rectal_bleeding: cb('sx_rectal_bleeding'),
+    sx_urinary_luts:    cb('sx_urinary_luts'),
+    sx_urinary_retention: cb('sx_urinary_retention'),
+    sx_urinary_incontinence: cb('sx_urinary_incontinence'),
+    sx_dyspareunia:     cb('sx_dyspareunia'),
+    sx_neurological:    cb('sx_neurological'),
+    sx_external_mass:   cb('sx_external_mass'),
+    sx_discharge_sinus: cb('sx_discharge_sinus'),
+    sx_incidental:      cb('sx_incidental'),
+    ex_dre:             v('ex_dre'),
+    ex_dre_mass:        v('ex_dre_mass'),
+    ex_dre_position:    v('ex_dre_position'),
+    ex_dre_size:        v('ex_dre_size'),
+    ex_mucosa:          v('ex_mucosa'),
+    ex_external_mass:   v('ex_external_mass'),
+    ex_fistula:         v('ex_fistula'),
+    ex_neuro:           v('ex_neuro'),
+    fn_lars_pre:        v('fn_lars_pre'),
+    fn_ipss_pre:        v('fn_ipss_pre'),
+    fn_wexner_pre:      v('fn_wexner_pre'),
+    fn_iief_pre:        v('fn_iief_pre'),
+    fn_fsfi_pre:        v('fn_fsfi_pre'),
+    // SECTION 3 — INVESTIGATIONS
+    img_mri:            cb('img_mri'),
+    img_ct_staging:     cb('img_ct_staging'),
+    img_ct_ap:          cb('img_ct_ap'),
+    img_erus:           cb('img_erus'),
+    img_xray:           cb('img_xray'),
+    img_pet:            cb('img_pet'),
+    mri_cranial:        v('mri_cranial'),
+    mri_caudal:         v('mri_caudal'),
+    mri_dim1:           v('mri_dim1'),
+    mri_dim2:           v('mri_dim2'),
+    mri_dim3:           v('mri_dim3'),
+    mri_morphology:     v('mri_morphology'),
+    mri_margin:         v('mri_margin'),
+    mri_rectum:         v('mri_rectum'),
+    mri_septations:     v('mri_septations'),
+    mri_solid_nodule:   v('mri_solid_nodule'),
+    mri_enhancement:    v('mri_enhancement'),
+    mri_sacrum:         v('mri_sacrum'),
+    mri_neural:         v('mri_neural'),
+    mri_levator:        v('mri_levator'),
+    mri_malignancy_suspicion: v('mri_malignancy_suspicion'),
+    mri_differential:   v('mri_differential'),
+    bx_performed:       v('bx_performed'),
+    bx_route:           v('bx_route'),
+    bx_result:          v('bx_result'),
+    mdt_discussed:      v('mdt_discussed'),
+    mdt_recommendation: v('mdt_recommendation'),
+    mdt_kraske_reason:  v('mdt_kraske_reason'),
+    // SECTION 4 — OPERATIVE
+    op_date:            v('op_date'),
+    op_surgeon_grade:   v('op_surgeon_grade'),
+    op_supervised:      v('op_supervised'),
+    op_urgency:         v('op_urgency'),
+    op_combined:        v('op_combined'),
+    op_combined_sequence: v('op_combined_sequence'),
+    op_stoma:           v('op_stoma'),
+    op_position:        v('op_position'),
+    op_incision:        v('op_incision'),
+    op_incision_length: v('op_incision_length'),
+    op_coccygectomy:    v('op_coccygectomy'),
+    op_bone_resection:  v('op_bone_resection'),
+    op_fascia:          v('op_fascia'),
+    op_rectal_breach:   v('op_rectal_breach'),
+    op_neurostim:       v('op_neurostim'),
+    op_drain:           v('op_drain'),
+    op_time:            v('op_time'),
+    op_ebl:             v('op_ebl'),
+    op_transfusion:     v('op_transfusion'),
+    op_closure:         v('op_closure'),
+    op_macro_completeness: v('op_macro_completeness'),
+    op_rupture:         v('op_rupture'),
+    op_notes:           v('op_notes'),
+    // SECTION 5 — HISTOPATHOLOGY
+    histotype:          getRadio('histotype'),
+    hist_other_detail:  v('hist_other_detail'),
+    hist_benign_malignant: v('hist_benign_malignant'),
+    hist_grade:         v('hist_grade'),
+    hist_malignant_transformation: v('hist_malignant_transformation'),
+    hist_pt:            v('hist_pt'),
+    hist_pn:            v('hist_pn'),
+    hist_pm:            v('hist_pm'),
+    hist_margin_status: v('hist_margin_status'),
+    hist_margin_dist:   v('hist_margin_dist'),
+    hist_margin_site:   v('hist_margin_site'),
+    hist_max_dim:       v('hist_max_dim'),
+    hist_lvi:           v('hist_lvi'),
+    hist_pni:           v('hist_pni'),
+    // SECTION 6 — COMPLICATIONS
+    cx_none:            cb('cx_none'),
+    cx_superficial_ssi: cb('cx_superficial_ssi'),
+    cx_deep_ssi:        cb('cx_deep_ssi'),
+    cx_haematoma_conservative: cb('cx_haematoma_conservative'),
+    cx_haematoma_operative: cb('cx_haematoma_operative'),
+    cx_presacral_perc:  cb('cx_presacral_perc'),
+    cx_presacral_op:    cb('cx_presacral_op'),
+    cx_fistula_wound:   cb('cx_fistula_wound'),
+    cx_delayed_healing: cb('cx_delayed_healing'),
+    cx_vac:             cb('cx_vac'),
+    cx_rtt:             v('cx_rtt'),
+    cx_itu:             v('cx_itu'),
+    cx_los:             v('cx_los'),
+    cx_readmit_30:      v('cx_readmit_30'),
+    cx_readmit_90:      v('cx_readmit_90'),
+    cx_readmit_reason:  v('cx_readmit_reason'),
+    cx_rectal_injury:   cb('cx_rectal_injury'),
+    cx_delayed_perforation: cb('cx_delayed_perforation'),
+    cx_retention:       cb('cx_retention'),
+    cx_uti:             cb('cx_uti'),
+    cx_vte:             cb('cx_vte'),
+    cx_ileus:           cb('cx_ileus'),
+    cx_hypoaesthesia:   cb('cx_hypoaesthesia'),
+    cx_sacral_palsy:    cb('cx_sacral_palsy'),
+    cx_sexual_dysfunction: cb('cx_sexual_dysfunction'),
+    cx_haemorrhage:     cb('cx_haemorrhage'),
+    cx_cd_wound:        v('cx_cd_wound'),
+    cx_wound_pod:       v('cx_wound_pod'),
+    cx_wound_healing_weeks: v('cx_wound_healing_weeks'),
+    cx_cd_overall:      v('cx_cd_overall'),
+    cx_mortality_30:    v('cx_mortality_30'),
+    cx_mortality_90:    v('cx_mortality_90'),
+    cx_notes:           v('cx_notes'),
+    // SECTION 7 — FUNCTIONAL
+    fn_lars_base:       v('fn_lars_base'),
+    fn_lars_3m:         v('fn_lars_3m'),
+    fn_lars_6m:         v('fn_lars_6m'),
+    fn_lars_12m:        v('fn_lars_12m'),
+    fn_lars_last:       v('fn_lars_last'),
+    fn_fi_new:          v('fn_fi_new'),
+    fn_constipation_new: v('fn_constipation_new'),
+    fn_ipss_base:       v('fn_ipss_base'),
+    fn_ipss_3m:         v('fn_ipss_3m'),
+    fn_ipss_6m:         v('fn_ipss_6m'),
+    fn_ipss_12m:        v('fn_ipss_12m'),
+    fn_retention_new:   v('fn_retention_new'),
+    fn_catheter_days:   v('fn_catheter_days'),
+    fn_permanent_urinary: v('fn_permanent_urinary'),
+    fn_iief_base:       v('fn_iief_base'),
+    fn_iief_3m:         v('fn_iief_3m'),
+    fn_iief_6m:         v('fn_iief_6m'),
+    fn_iief_12m:        v('fn_iief_12m'),
+    fn_fsfi_base:       v('fn_fsfi_base'),
+    fn_fsfi_3m:         v('fn_fsfi_3m'),
+    fn_fsfi_6m:         v('fn_fsfi_6m'),
+    fn_fsfi_12m:        v('fn_fsfi_12m'),
+    fn_dyspareunia:     v('fn_dyspareunia'),
+    fn_ed:              v('fn_ed'),
+    fn_rtw:             v('fn_rtw'),
+    // SECTION 8 — FOLLOW-UP
+    fu_duration:        v('fu_duration'),
+    fu_last_date:       v('fu_last_date'),
+    fu_status:          v('fu_status'),
+    fu_surveillance:    v('fu_surveillance'),
+    fu_surveillance_modality: v('fu_surveillance_modality'),
+    fu_surveillance_interval: v('fu_surveillance_interval'),
+    fu_local_recurrence: v('fu_local_recurrence'),
+    fu_ttp:             v('fu_ttp'),
+    fu_detection_method: v('fu_detection_method'),
+    fu_recurrence_site: v('fu_recurrence_site'),
+    fu_distant_mets:    v('fu_distant_mets'),
+    fu_mets_site:       v('fu_mets_site'),
+    fu_dfs:             v('fu_dfs'),
+    fu_os:              v('fu_os'),
+    fu_adjuvant:        v('fu_adjuvant'),
+    fu_salvage:         v('fu_salvage'),
+    fu_salvage_margin:  v('fu_salvage_margin'),
+    fu_notes:           v('fu_notes'),
+  };
+  return data;
+}
+
+/* helpers */
+function v(id){ const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function cb(id){ const el = document.getElementById(id); return el ? (el.checked ? 'Yes' : '') : ''; }
+function getRadio(name){
+  const sel = document.querySelector(`input[name="${name}"]:checked`);
+  if(!sel) return '';
+  // get label text
+  const lbl = sel.closest('label');
+  return lbl ? lbl.textContent.trim().replace(/^\s*/, '') : sel.id;
+}
+
+/* ── Save to Google Sheets (upsert — update if exists, insert if new) ── */
+async function saveToSheets(){
+  const url = scriptUrl || document.getElementById('scriptUrl').value.trim();
+  if(!url){ toast('Paste your Apps Script URL in the banner above first', 'error'); return; }
+
+  const studyId = v('meta_study_id') || v('d_study_id');
+  if(!studyId){ toast('Please enter a Study ID before saving', 'error'); return; }
+
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Saving…';
+  document.getElementById('saveMsg').textContent = 'Saving to Google Sheets…';
+  document.getElementById('saveStatus').className = 'save-status saving';
+
+  const data = collectData();
+
+  try {
+    await fetch(url, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(data)
+    });
+    // no-cors gives an opaque response — success is assumed if no network error.
+    // The script handles the upsert logic server-side.
+    markSaved();
+    toast('Saved — row updated in Google Sheets ✓', 'success');
+    updatePatientBar(studyId, 'last saved: just now');
+  } catch(err) {
+    markError('Network error — is the Apps Script deployed?');
+    toast('Save failed: ' + err.message, 'error');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Save to Google Sheets';
+}
+
+/* ── Load patient from Google Sheets ── */
+async function loadPatient(){
+  const url = scriptUrl || document.getElementById('scriptUrl').value.trim();
+  if(!url){ toast('Connect to Google Sheets first using the banner above', 'error'); return; }
+
+  const studyId = document.getElementById('meta_study_id').value.trim();
+  if(!studyId){ toast('Enter a Study ID first, then click Load', 'error'); return; }
+
+  const btn = document.getElementById('btnLoad');
+  btn.disabled = true;
+  btn.textContent = '…';
+
+  try {
+    const res = await fetch(url + '?action=load&studyId=' + encodeURIComponent(studyId));
+    const json = await res.json();
+
+    if(json.status === 'found'){
+      populateForm(json.data);
+      hasUnsaved = false;
+      document.getElementById('unsavedDot').style.display = 'none';
+      document.getElementById('saveMsg').textContent = 'Loaded from sheet — save after editing';
+      document.getElementById('saveStatus').className = 'save-status';
+      const saves = json.saveCount || '?';
+      const created = json.createdAt ? new Date(json.createdAt).toLocaleDateString('en-GB') : '';
+      updatePatientBar(studyId, 'loaded · created ' + created, saves + ' save' + (saves===1?'':'s'));
+      toast('Loaded ' + studyId + ' from Google Sheets ✓', 'success');
+    } else if(json.status === 'not_found'){
+      toast('No record found for ' + studyId + ' — start entering data and save', '');
+      hidePatientBar();
+    } else {
+      toast('Error: ' + (json.message || 'unknown'), 'error');
+    }
+  } catch(err){
+    toast('Load failed — check the URL and that the script is deployed as v2', 'error');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Load';
+}
+
+/* ── Populate form from a stored data object ── */
+function populateForm(data){
+  // Text inputs and textareas
+  Object.keys(data).forEach(key => {
+    const el = document.getElementById(key);
+    if(!el) return;
+    if(el.type === 'checkbox'){
+      el.checked = (data[key] === 'Yes');
+    } else if(el.type === 'radio'){
+      // handled below
+    } else {
+      el.value = data[key] || '';
+    }
+  });
+
+  // Checkboxes (ids match keys directly)
+  document.querySelectorAll('input[type=checkbox]').forEach(el => {
+    if(data[el.id] !== undefined) el.checked = (data[el.id] === 'Yes');
+  });
+
+  // Radio group: histotype — match by label text
+  const histVal = data['histotype'] || '';
+  if(histVal){
+    document.querySelectorAll('input[name="histotype"]').forEach(radio => {
+      const lbl = radio.closest('label');
+      if(lbl && lbl.textContent.trim().startsWith(histVal.substring(0,20))){
+        radio.checked = true;
+      }
+    });
+  }
+}
+
+/* ── Patient status bar ── */
+function updatePatientBar(studyId, msg, saves){
+  const bar = document.getElementById('patientBar');
+  document.getElementById('patientBarId').textContent = studyId;
+  document.getElementById('patientBarMsg').textContent = msg || '';
+  document.getElementById('patientBarSaves').textContent = saves || '';
+  bar.classList.remove('hidden');
+}
+function hidePatientBar(){
+  document.getElementById('patientBar').classList.add('hidden');
+}
+
+/* ── Clear form ── */
+function clearForm(){
+  if(!confirm('Clear all fields for this patient? This cannot be undone.')) return;
+  document.querySelectorAll('input[type=text], input[type=date], textarea').forEach(el => el.value = '');
+  document.querySelectorAll('input[type=checkbox], input[type=radio]').forEach(el => el.checked = false);
+  document.getElementById('meta_version').value = 'v1.0';
+  document.getElementById('saveMsg').textContent = 'Form cleared';
+  document.getElementById('saveStatus').className = 'save-status';
+  document.getElementById('unsavedDot').style.display = 'none';
+  hasUnsaved = false;
+  hidePatientBar();
+  show(0);
+  toast('Form cleared — ready for next patient');
+}
+
+/* ── Warn on exit if unsaved ── */
+window.addEventListener('beforeunload', e => {
+  if(hasUnsaved){ e.preventDefault(); e.returnValue = ''; }
+});
+</script>
+</body>
+</html>
